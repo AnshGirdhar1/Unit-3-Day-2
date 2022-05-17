@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: rgb(244, 244, 244);
+        font-family: "Poppins", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      #counter {
+        background-color: #000;
+        height: 80px;
+        color: #fff;
+        font-size: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+      }
+
+      #container {
+        width: 80%;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+        padding: 80px 0;
+      }
+
+      #container > div {
+        background-color: #fff;
+        border-radius: 10px;
+        padding-bottom: 30px;
+      }
+
+      #container > div:hover {
+        box-shadow: rgb(223, 222, 222) 1px 1px 25px;
+      }
+
+      h3,
+      p,
+      button {
+        margin-left: 20px;
+      }
+
+      p {
+        font-weight: 600;
+      }
+
+      .delete {
+        border: none;
+        padding: 10px;
+        display: inline-block;
+        width: 35%;
+        font-weight: 500;
+        font-size: 16px;
+        box-shadow: rgb(175 174 174) 1px 1px 7px;
+        color: #fff;
+        cursor: pointer;
+        background-color: #000;
+        font-family: "Poppins", sans-serif;
+      }
+
+      .sold-status {
+        border: none;
+        padding: 10px 0;
+        display: inline-block;
+        width: 35%;
+        font-weight: 500;
+        font-size: 16px;
+        box-shadow: rgb(175 174 174) 1px 1px 7px;
+        color: #fff;
+        cursor: pointer;
+        font-family: "Poppins", sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="counter"></div>
+    <div id="container"></div>
+  </body>
+</html>
+<script>
+  var allProducts = JSON.parse(localStorage.getItem("Products"));
+  document.querySelector("#counter").innerText =
+    "Total Products = " + allProducts.length;
+  displayData(allProducts);
+
+  function displayData(arr) {
+    arr.forEach(function (elem, index) {
+      var singleProduct = document.createElement("div");
+      singleProduct.setAttribute("class", "product");
+      var image = document.createElement("img");
+      image.setAttribute("src", elem.ProductImg);
+      var name = document.createElement("h3");
+      name.innerText = elem.ProductName;
+      var price = document.createElement("p");
+      price.innerText = "Rs " + elem.ProductPrice;
+      var removeBtn = document.createElement("button");
+      removeBtn.innerText = "Remove";
+      removeBtn.setAttribute("id", "remove");
+      removeBtn.setAttribute("class", "delete");
+      removeBtn.addEventListener("click", function () {
+        arr.splice(index, 1);
+        window.location.reload();
+        document.querySelector("#counter").innerText =
+          "Total Products = " + allProducts.length;
+        localStorage.setItem("Products", JSON.stringify(arr));
+      });
+      var soldStatus = document.createElement("button");
+      soldStatus.innerText = elem.SoldStatus;
+      console.log(elem.SoldStatus);
+      if (elem.SoldStatus == "True") {
+        soldStatus.style.backgroundColor = "red";
+      } else {
+        soldStatus.style.backgroundColor = "green";
+      }
+      soldStatus.addEventListener("click", function () {
+        if (elem.SoldStatus == "True") {
+          elem.SoldStatus = "False";
+          soldStatus.style.backgroundColor = "green";
+          soldStatus.innerText = elem.SoldStatus;
+          localStorage.setItem("Products", JSON.stringify(arr));
+        } else {
+          elem.SoldStatus = "True";
+          soldStatus.style.backgroundColor = "red";
+          soldStatus.innerText = elem.SoldStatus;
+          localStorage.setItem("Products", JSON.stringify(arr));
+        }
+      });
+      soldStatus.setAttribute("id", "sold");
+      soldStatus.setAttribute("class", "sold-status");
+      singleProduct.append(image, name, price, removeBtn, soldStatus);
+      document.querySelector("#container").append(singleProduct);
+    });
+  }
+</script>
